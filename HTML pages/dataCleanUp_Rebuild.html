@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data clean & Rebuild</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #001a4d;
+            color: #333333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            padding: 20px;
+            position: relative;
+        }
+
+        .brand-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .form-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            flex: 1;
+            max-width: 450px;
+            max-height: 85vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .form-card h2 {
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: #001a4d;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label.field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #002b80;
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc2626;
+            font-size: 1rem;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+        }
+
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: #ffffff;
+            width: 100%;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #94a3b8;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        .custom-choose-btn {
+            background-color: #f1f5f9;
+            color: #333333;
+            border-right: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .file-upload-wrapper:hover .custom-choose-btn {
+            background-color: #e2e8f0;
+        }
+
+        .file-name-display {
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+            pointer-events: none;
+        }
+
+        .horizontal-row-group {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .field-pair {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .btn-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-top: 28px;
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            padding-top: 10px;
+        }
+
+        button.action-btn {
+            padding: 11px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-submit {
+            background-color: #ff8c00;
+            color: #ffffff;
+        }
+
+        .btn-submit:hover {
+            background-color: #e07b00;
+        }
+
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                justify-content: center;
+                padding-top: 120px;
+            }
+
+            .brand-logo {
+                left: 50%;
+                transform: translateX(-50%);
+                top: 15px;
+                height: 70px;
+            }
+
+            .wrapper {
+                max-width: 100%;
+            }
+
+            .form-card {
+                max-width: 100%;
+                max-height: 75vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .horizontal-row-group {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .btn-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            button.action-btn {
+                width: 100%;
+            }
+
+            .form-card {
+                padding: 20px;
+                max-height: 70vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img class="brand-logo" src="../HTML pages/knight-Logo.svg" alt="Knight Fintech Logo">
+    <div class="wrapper">
+        <div class="form-card">
+            <h2>Data Cleanup & Rebuild Process</h2>
+
+            <form id="appForm" data-automation-status="idle" onsubmit="handleFormSubmit(event)"
+                style="display: flex; flex-direction: column; height: 100%; max-height: 520px; margin: 0; overflow: hidden;">
+
+                <!-- 2. ADDED SCROLL CONTAINER: Wraps all input rows and forces internal scrolling above the buttons -->
+                <div class="form-scrollable-body"
+                    style="flex: 1; overflow-y: auto; padding-right: 8px; scrollbar-width: thin;">
+
+                    <div class="form-group">
+                        <label class="field-label required">Change Account Status</label>
+                        <div class="file-upload-wrapper" onclick="triggerFileInput('datacleanup_Upload')">
+                            <div class="custom-choose-btn">Choose File</div>
+                            <div class="file-name-display" id="datacleanup_text">No file chosen</div>
+                            <!-- FIXED: Updated target ID to 'datacleanup_text' below -->
+                            <input type="file" id="datacleanup_Upload" name="datacleanup_Upload"
+                                class="hidden-file-input" onchange="updateFileName(this, 'datacleanup_text')">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="field-label" for="productName">Data Clean Up Date</label>
+                        <!-- <label for="appDate" class="required">Data Clean Up Date</label> -->
+                        <input type="date" id="appDate" name="appDate" required
+                            style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; color: #94a3b8; outline: none; box-sizing: border-box; transition: all 0.2s ease;"
+                            onchange="this.style.color='#333333'">
+                    </div>
+
+                    <!-- BackFill File Group -->
+                    <div class="form-group">
+                        <label class="field-label required">BackFill File Upload</label>
+                        <div class="file-upload-wrapper" onclick="triggerFileInput('backfill_Upload')">
+                            <div class="custom-choose-btn">Choose File</div>
+                            <div class="file-name-display" id="backfill_text">No file chosen</div>
+                            <input type="file" id="backfill_Upload" name="backfill_Upload" class="hidden-file-input"
+                                onchange="updateFileName(this, 'backfill_text')">
+                        </div>
+                    </div>
+
+
+
+                    <!-- Date Selection Row -->
+                    <div class="horizontal-row-group">
+                        <div class="field-pair">
+                            <label class="field-label" for="rebuildFromDate">BackFill From Date</label>
+                            <input type="date" id="rebuildFromDate" name="rebuildFromDate" style="color: #94a3b8;"
+                                onchange="this.style.color='#333333'">
+                        </div>
+                        <div class="field-pair">
+                            <label class="field-label" for="rebuildToDate">BackFill To Date</label>
+                            <input type="date" id="rebuildToDate" name="rebuildToDate" style="color: #94a3b8;"
+                                onchange="this.style.color='#333333'">
+                        </div>
+                    </div>
+
+
+                    <form id="appForm" onsubmit="handleSubmit(event)" data-automation-status="idle">
+                        <!-- <div class="form-group">
+                            <label class="field-label" for="productName">Data Clean Up Date</label>
+                            <label for="appDate" class="required">Data Clean Up Date</label> 
+                            <input type="date" id="appDate" name="appDate" required
+                                style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; color: #94a3b8; outline: none; box-sizing: border-box; transition: all 0.2s ease;"
+                                onchange="this.style.color='#333333'">
+                         </div>  -->
+
+                        <!-- <div class="horizontal-row-group" style="display: flex; gap: 16px; margin-bottom: 20px;">
+                            <div class="field-pair" style="flex: 1; display: flex; flex-direction: column;">
+                                <label for="loanStatus" class="field-label"
+                                    style="margin-bottom: 6px; font-size: 0.9rem; font-weight: 500; color: #334155;">Change
+                                    Loan Status</label>
+                                <select id="loanStatus" name="loanStatus"
+                                    style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; color: #94a3b8; outline: none; box-sizing: border-box; transition: all 0.2s ease; cursor: pointer;"
+                                    onchange="if(this.value !== '') { this.style.color='#333333'; } else { this.style.color='#94a3b8'; }">
+                                    <option value="" selected style="color: #94a3b8;">Select Status</option>
+                                    <option value="NPA" style="color: #333333;">NPA</option>
+                                    <option value="Active" style="color: #333333;">Active</option>
+                                    <option value="Matured" style="color: #333333;">Matured</option>
+                                </select>
+                            </div>
+                            <div class="field-pair" style="flex: 1; display: flex; flex-direction: column;">
+                                <label for="bankStatus" class="field-label"
+                                    style="margin-bottom: 6px; font-size: 0.9rem; font-weight: 500; color: #334155;">Change
+                                    Bank Status</label>
+                                <select id="bankStatus" name="bankStatus"
+                                    style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; color: #94a3b8; outline: none; box-sizing: border-box; transition: all 0.2s ease; cursor: pointer;"
+                                    onchange="if(this.value !== '') { this.style.color='#333333'; } else { this.style.color='#94a3b8'; }">
+                                    <option value="" selected style="color: #94a3b8;">Select Status</option>
+                                    <option value="NPA" style="color: #333333;">NPA</option>
+                                    <option value="Active" style="color: #333333;">Active</option>
+                                    <option value="Matured" style="color: #333333;">Matured</option>
+                                </select>
+                            </div>
+                        </div> -->
+
+                        <form id="appForm" onsubmit="handleFormSubmit(event)" data-automation-status="idle">
+
+                            <!-- Collection Feed Selection Dropdown Block -->
+                            <div class="form-group" style="margin-bottom: 20px; display: flex; flex-direction: column;">
+                                <label class="field-label required" for="rebuild"
+                                    style="margin-bottom: 6px; font-size: 0.9rem; font-weight: 500; color: #334155;">Collection
+                                    Feed Data</label>
+                                <select id="rebuild" name="rebuild" required
+                                    style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; color: #94a3b8; outline: none; cursor: pointer;"
+                                    onchange="handleCollectionToggle(this); validateRequiredFields();">
+                                    <option value="" disabled selected hidden>Select Option</option>
+                                    <option value="true" style="color: #333333;">Check</option>
+                                    <option value="false" style="color: #333333;">Uncheck</option>
+                                </select>
+                            </div>
+
+                            <!-- Non-mandatory Collection File Group (Opens up dynamically only when 'Check' is selected) -->
+                            <div class="form-group" id="collectionFileGroup"
+                                style="display: none; margin-bottom: 20px;">
+                                <label class="field-label">Collection File Upload</label>
+                                <div class="file-upload-wrapper" onclick="triggerFileInput('collectionfileupload')"
+                                    style="cursor: pointer;">
+                                    <div class="custom-choose-btn">Choose File</div>
+                                    <div class="file-name-display" id="collection_text">No file chosen</div>
+                                    <input type="file" id="collectionfileupload" name="collectionfileupload"
+                                        class="hidden-file-input" onchange="updateFileName(this, 'collection_text')">
+                                </div>
+                            </div>
+
+                            <!-- Master block wrapper updated to stay hidden by default on standard page layout initialization -->
+                            <div id="partnerProductGroup" style="display: none; width: 100%;">
+
+                                <!-- Partner Name Selection Element -->
+                                <div class="field-pair" style="margin-bottom: 20px;">
+                                    <label class="field-label" id="partnerLabel" for="partnerSelect">Partner
+                                        Name</label>
+                                    <select id="partnerSelect" name="partnerName"
+                                        style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; color: #94a3b8; outline: none; cursor: pointer;"
+                                        onchange="handlePartnerChange(this)">
+                                        <option value="" disabled selected hidden>Select a partner</option>
+                                        <option value="15" style="color: #333333;">Aavas Financiers</option>
+                                        <option value="20" style="color: #333333;">Aditya Birla Housing Finance LTD
+                                        </option>
+                                        <option value="8" style="color: #333333;">Aadhar Housing finance LTD</option>
+                                        <option value="12" style="color: #333333;">Annapurna finance</option>
+                                        <option value="25" style="color: #333333;">Bajaj Finance Ltd</option>
+                                        <option value="9" style="color: #333333;">Capri Global Capital LTD</option>
+                                        <option value="16" style="color: #333333;">Capri Gold</option>
+                                        <option value="27" style="color: #333333;">Dewan Housing Finance Ltd</option>
+                                        <option value="7" style="color: #333333;">Edelweiss Housing</option>
+                                        <option value="70" style="color: #333333;">goldrate</option>
+                                        <option value="11" style="color: #333333;">Hinduja Housing Finance</option>
+                                        <option value="14" style="color: #333333;">Hinduja Housing Master</option>
+                                        <option value="10" style="color: #333333;">Hinduja Leyland</option>
+                                        <option value="28" style="color: #333333;">IDFC First Bank</option>
+                                        <option value="31" style="color: #333333;">IIFL Finance Limited</option>
+                                        <option value="17" style="color: #333333;">IIFL Samasta</option>
+                                        <option value="19" style="color: #333333;">IIFL TRANCHE 1</option>
+                                        <option value="6" style="color: #333333;">India Infoline Limited</option>
+                                        <option value="24" style="color: #333333;">Indiabulls Housing Finance Limited
+                                        </option>
+                                        <option value="1" style="color: #333333;">MFL</option>
+                                        <option value="57" style="color: #333333;">OVERSEAS1</option>
+                                        <option value="2" style="color: #333333;">Paisalo</option>
+                                        <option value="26" style="color: #333333;">Piramal Capital Housing Finance Ltd
+                                        </option>
+                                        <option value="23" style="color: #333333;">PNB Housing Finance</option>
+                                        <option value="48" style="color: #333333;">Punjab &amp; Sind Bank</option>
+                                        <option value="30" style="color: #333333;">Reliance Commercial Finance Limited
+                                        </option>
+                                        <option value="29" style="color: #333333;">Reliance home finance limited
+                                        </option>
+                                        <option value="47" style="color: #333333;">Samman Capital</option>
+                                        <option value="3" style="color: #333333;">Shriram Transport finance</option>
+                                        <option value="5" style="color: #333333;">Tata finance Solution</option>
+                                        <option value="4" style="color: #333333;">Vastu Housing Finance</option>
+                                    </select>
+                                </div>
+
+                                <!-- Product Name Selection Element -->
+                                <div class="field-pair" style="margin-bottom: 20px;">
+                                    <label class="field-label" id="productLabel" for="productSelect">Product
+                                        Name</label>
+                                    <select id="productSelect" name="productName" disabled
+                                        style="width: 100%; padding: 10px 12px; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; color: #94a3b8; outline: none; cursor: not-allowed; opacity: 0.6; transition: all 0.2s ease;"
+                                        onchange="this.style.color = '#333333'; validateRequiredFields();">
+                                        <option value="" disabled selected hidden>Select a product</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons Group Container -->
+                            <div class="btn-container" style="display: flex; gap: 12px; width: 100%;">
+                                <button type="submit" id="submitBtn" disabled
+                                    style="flex: 1; padding: 12px; background-color: #ff8c00; color: white; border: none; border-radius: 6px; font-weight: bold; transition: opacity 0.2s; opacity: 0.6; cursor: not-allowed;">
+                                    Submit </button>
+                                <button type="button" class="action-btn btn-reset" onclick="handleReset()"
+                                    style="padding: 12px 24px; background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;">
+                                    Reset </button>
+                            </div>
+                        </form>
+                </div>
+        </div>
+
+        <script>
+            const productOptionsArray = [
+                "Shriram cv pool buyout", "BCModel", "SBI-MFL DA Loans", "IB PSB Test",
+                "Anniversary Customer Attribution", "RRANNIVERSARY", "LOANLIMIT", "RRLending",
+                "Daily Demand", "Rate Reset BC", "Trial Balence Shriram", "Shriram cv pool graceperiod",
+                "STFC CV Grace Dynamic", "Standard Pool", "Alpha Fleet", "Co-Lending Pool",
+                "Partnerwise SO Journey Product", "Lending 100", "ASHVDCB-CLM2", "Poonawala-Vehicle",
+                "Test BL T5", "Test BL Unsec T6", "abcd", "RRPLUSONE", "UBI_HHF_C2LAP",
+                "IB PSB LAP MSME", "Uco- HHFL Hl RateReset", "TEST YASH", "BOB HL DUMMY",
+                "TEST ETB Reject", "Half Yearly product M+1", "Test", "vfdf", "Mudra",
+                "AFL QA Wednesday 3rd week", "MoratorimTEST23", "AU Small Finance HOME LOAN DA",
+                "Capri- UCO- GOLD P1_New clm1", "Personal Loan STP", "UCO IIFL P4", "Product 100",
+                "Gold Loan", "NEWHL", "ONEPLUSTEST", "TEST ETB Reject1", "IIFL Lending",
+                "HL Product Dummy", "TEST PRODUCT", "Poonawala-Vehicle (CLM2 C-VL)", "GOLDRATE",
+                "IncredEducation", "Rate lending", "S0 PRODUCT 1905", "TEST ISSTP2",
+                "BOI DUMMY PRODUCTS", "SOProduct", "Capri- UCO- GOLD P2", "UCO- CGCl-HL",
+                "CLA MSME LAP", "TEST ISSTP3", "fff", "ELEVENMOntly", "SBI Gobal - Paul Merchant Gold Loan",
+                "STAR-INDIABULLS SECURED BUSINESS LOAN DA", "DCB12", "UCO IIFL GL-P2",
+                "AUSF Unsecured BL", "STAR-INDIABULLS SECURED BUSINESS LOAN", "add product",
+                "AUSF Unsecured BL DA", "Capri- UCO- GOLD P3", "Capri- UCO- GOLD P1",
+                "PSB Samman Capital LAP Loan", "Test Akshay product", "M+1_Custom Attribution",
+                "UCO IIFL GL-P3", "Clix LAP", "AU Small Finance HOME LOAN", "IB PSB Home loan",
+                "Capri- UCO- GOLD P1 New", "rateresettesting", "M+1 Product", "ANGEL OD PRODUCT",
+                "Kifs Personal Loan", "testotsp", "PSB Samman Capital Home Loan CLM2",
+                "TEST PRODUCT 1905", "TESTR", "VEHICALPLUSONE", "Swagata AUSF Unsecured BL",
+                "TEST ISSTP1", "PHONEPE", "Uco- HHFL Hl", "UCO IIFL GL-PB4", "IIFL Lending Gold Yearly",
+                "MAS Vehicle Loan", "TEST ISSTP", "Lulu FInserve - Gold", "HHFL", "HL CLA"
+            ];
+
+            window.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('appForm').setAttribute('data-automation-status', 'triggered');
+
+                // Tracking IDs updated to include both explicit file input elements to trigger changes automatically
+                const trackInputIds = ['collectionfileupload', 'datacleanup_Upload', 'backfill_Upload', 'partnerSelect', 'productSelect', 'rebuild', 'rebuildFromDate', 'rebuildToDate', 'appDate', /*'loanStatus', 'bankStatus'*/];
+                trackInputIds.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.addEventListener('change', () => {
+                            if (element.tagName === 'SELECT' && element.value !== "") {
+                                element.style.color = '#333333';
+                            }
+                            validateRequiredFields();
+                        });
+                    }
+                });
+
+                validateRequiredFields();
+            });
+
+            function triggerFileInput(id) {
+                document.getElementById(id).click();
+            }
+
+            function updateFileName(inputElement, textDisplayId) {
+                const displayEl = document.getElementById(textDisplayId);
+                if (inputElement.files && inputElement.files.length > 0) {
+                    displayEl.textContent = inputElement.files[0].name;
+                    displayEl.style.color = "#333333";
+                } else {
+                    displayEl.textContent = "No file chosen";
+                    displayEl.style.color = "#94a3b8";
+                }
+                validateRequiredFields();
+            }
+
+            function handleCollectionToggle(select) {
+                const fileGroup = document.getElementById('collectionFileGroup');
+                const fileInput = document.getElementById('collectionfileupload');
+                const partnerProductGroup = document.getElementById('partnerProductGroup');
+                const partnerSelect = document.getElementById('partnerSelect');
+                const productSelect = document.getElementById('productSelect');
+
+                if (select.value === 'true') {
+                    select.style.color = '#333333';
+                    if (fileGroup) fileGroup.style.display = 'block';
+                    if (fileInput) fileInput.setAttribute('required', 'required');
+
+                    if (partnerProductGroup) partnerProductGroup.style.display = 'block';
+                    if (partnerSelect) partnerSelect.setAttribute('required', 'required');
+                    if (productSelect) productSelect.setAttribute('required', 'required');
+                } else {
+                    select.style.color = select.value === 'false' ? '#333333' : '#94a3b8';
+                    if (fileGroup) fileGroup.style.display = 'none';
+                    if (fileInput) {
+                        fileInput.removeAttribute('required');
+                        fileInput.value = '';
+                    }
+                    const collectionText = document.getElementById('collection_text');
+                    if (collectionText) {
+                        collectionText.textContent = 'No file chosen';
+                        collectionText.style.color = '#94a3b8';
+                    }
+                    if (partnerProductGroup) partnerProductGroup.style.display = 'none';
+                    if (partnerSelect) partnerSelect.removeAttribute('required');
+                    if (productSelect) productSelect.removeAttribute('required');
+                    if (partnerSelect) {
+                        partnerSelect.value = '';
+                        partnerSelect.style.color = '#94a3b8';
+                    }
+                    if (productSelect) {
+                        productSelect.innerHTML = '<option value="" disabled selected hidden>Select a product</option>';
+                        productSelect.style.color = '#94a3b8';
+                        productSelect.setAttribute('disabled', 'true');
+                        productSelect.style.backgroundColor = '#f8fafc';
+                        productSelect.style.cursor = 'not-allowed';
+                        productSelect.style.opacity = '0.6';
+                    }
+                }
+                validateRequiredFields();
+            }
+
+            function handlePartnerChange(partnerSelect) {
+                partnerSelect.style.color = '#333333';
+                const productSelect = document.getElementById('productSelect');
+                if (!productSelect) return;
+
+                productSelect.innerHTML = '<option value="" disabled selected hidden>Select a product</option>';
+                productSelect.style.color = '#94a3b8';
+                productSelect.removeAttribute('disabled');
+                productSelect.style.backgroundColor = '#ffffff';
+                productSelect.style.cursor = 'pointer';
+                productSelect.style.opacity = '1';
+
+                productOptionsArray.forEach(prod => {
+                    const opt = document.createElement('option');
+                    opt.value = prod.toLowerCase().replace(/\s+/g, '_');
+                    opt.textContent = prod;
+                    opt.style.color = '#333333';
+                    productSelect.appendChild(opt);
+                });
+
+                validateRequiredFields();
+            }
+
+            function validateRequiredFields() {
+                const backfillInput = document.getElementById("backfill_Upload");
+                const datacleanupInput = document.getElementById("datacleanup_Upload");
+                const collectionInput = document.getElementById("collectionfileupload");
+                const partnerSelect = document.getElementById("partnerSelect");
+                const productSelect = document.getElementById("productSelect");
+                const rebuildSelect = document.getElementById("rebuild");
+                const appDateInput = document.getElementById("appDate");
+                const submitBtn = document.getElementById("submitBtn");
+
+                if (!submitBtn) return;
+
+                // Core required validation states evaluation matrix
+                const hasDataCleanup = datacleanupInput && datacleanupInput.files && datacleanupInput.files.length > 0;
+                const hasBackfill = backfillInput && backfillInput.files && backfillInput.files.length > 0;
+                const hasCleanUpDate = appDateInput && appDateInput.value !== "";
+                const hasRebuildOption = rebuildSelect && rebuildSelect.value !== "";
+
+                let hasCollection = true;
+                let hasPartner = true;
+                let hasProduct = true;
+
+                // Dynamic conditional validation evaluation trees
+                if (rebuildSelect && rebuildSelect.value === 'true') {
+                    hasCollection = collectionInput && collectionInput.files && collectionInput.files.length > 0;
+                    hasPartner = partnerSelect && partnerSelect.value !== "";
+                    hasProduct = productSelect && productSelect.value !== "";
+                }
+
+                // Comprehensive validation checks including dynamic and persistent form parameters
+                if (hasDataCleanup && hasBackfill && hasCleanUpDate && hasRebuildOption && hasCollection && hasPartner && hasProduct) {
+                    submitBtn.removeAttribute("disabled");
+                    submitBtn.style.opacity = "1";
+                    submitBtn.style.cursor = "pointer";
+                } else {
+                    submitBtn.setAttribute("disabled", "true");
+                    submitBtn.style.opacity = "0.5";
+                    submitBtn.style.cursor = "not-allowed";
+                }
+            }
+
+            function handleReset() {
+                document.getElementById('appForm').reset();
+
+                const datacleanupText = document.getElementById('datacleanup_text');
+                const backfillText = document.getElementById('backfill_text');
+                const collectionText = document.getElementById('collection_text');
+
+                if (datacleanupText) {
+                    datacleanupText.textContent = "No file chosen";
+                    datacleanupText.style.color = "#94a3b8";
+                }
+                if (backfillText) {
+                    backfillText.textContent = "No file chosen";
+                    backfillText.style.color = "#94a3b8";
+                }
+                if (collectionText) {
+                    collectionText.textContent = "No file chosen";
+                    collectionText.style.color = "#94a3b8";
+                }
+
+                const colorInputIds = [
+                    'rebuildFromDate',
+                    'rebuildToDate',
+                    'appDate',
+                    'rebuild',
+                    'loanStatus',
+                    'bankStatus',
+                    'partnerSelect'
+                ];
+
+                colorInputIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.color = "#94a3b8";
+                });
+
+                const fileGroup = document.getElementById('collectionFileGroup');
+                if (fileGroup) fileGroup.style.display = 'none';
+
+                const partnerProductGroup = document.getElementById('partnerProductGroup');
+                if (partnerProductGroup) partnerProductGroup.style.display = 'none';
+
+                const partnerSelect = document.getElementById('partnerSelect');
+                const productSelect = document.getElementById('productSelect');
+
+                if (partnerSelect) partnerSelect.removeAttribute('required');
+
+                // FIXED: Corrected structural innerHTML tag layout injection framework rule
+                if (productSelect) {
+                    productSelect.innerHTML = '<option value="" disabled selected hidden>Select a product</option>';
+                    productSelect.style.color = '#94a3b8';
+                    productSelect.setAttribute('disabled', 'true');
+                    productSelect.removeAttribute('required');
+                    productSelect.style.backgroundColor = '#f8fafc';
+                    productSelect.style.cursor = 'not-allowed';
+                    productSelect.style.opacity = '0.6';
+                }
+
+                // FIXED: Relocated step inside reset boundary loop execution space
+                validateRequiredFields();
+            }
+            
+            function handleFormSubmit(event) {
+                event.preventDefault();
+                document.getElementById('appForm').setAttribute('data-automation-status', 'submitted');
+                setTimeout(() => {
+                    alert('Data clean-up workflow process submitted successfully!');
+                }, 100);
+            }
+
+        </script>
+
+
+
+
+</body>
+
+</html>

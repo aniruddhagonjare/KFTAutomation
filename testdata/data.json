@@ -1,0 +1,36 @@
+[
+{
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "expectedOutcomes": "Successfully logged in"
+},
+{
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "expectedOutcomes": "Sorry, this user has been locked out."
+},
+{
+    "username": "problem_user",
+    "password": "secret_sauce",
+    "expectedOutcomes": "Sorry, This user has some problem, Please contact support."
+},
+
+{
+    "userL0": "ucoL0@ucobank.com",
+    "L0password": "Uco@1243"
+},
+
+{
+    "userL1": "ucoL1@ucobank.com",
+    "L1password": "Uco@1243"
+},
+{
+    "userL2":"ucoL2@ucobank.com",
+    "L2password": "Uco@1243" 
+},
+{
+    "userL3":"ucoL3@ucobank.com",
+    "L3password": "Uco@1243"
+}
+
+]

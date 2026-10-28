@@ -1,0 +1,38 @@
+{
+  "name": "fe-automations",
+  "version": "1.0.0",
+  "description": "Integrating the Fe-automation Setup for KFT",
+  "main": "index.js",
+  "scripts": {
+    "rfin": "npx playwright test tests/muthoot/mflTest.spec.js --headed",
+    "angelone": "npx playwright test src/tests/playwright/aolTest.spec.js --headed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bonthusrihari-collab/fe-automations.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "cjs",
+  "bugs": {
+    "url": "https://github.com/bonthusrihari-collab/fe-automations/issues"
+  },
+  "homepage": "https://github.com/bonthusrihari-collab/fe-automations#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^25.6.0",
+    "dotenv": "^17.4.2",
+    "ecdsa-sig-formatter": "^1.0.11"
+  },
+  "dependencies": {
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "codegen": "^0.1.0",
+    "cors": "^2.8.6",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "mssql": "^12.7.0",
+    "xlsx": "^0.18.5"
+  }
+}

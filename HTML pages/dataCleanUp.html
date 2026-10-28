@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Data CleanUp</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #001a4d;
+            color: #333333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            padding: 20px;
+            position: relative;
+        }
+
+        .brand-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .form-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            flex: 1;
+            max-width: 450px;
+            max-height: 85vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .form-card h2 {
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: #001a4d;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #002b80;
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc2626;
+            font-size: 1rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+        }
+
+        input::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1;
+        }
+
+        select:invalid {
+            color: #94a3b8;
+        }
+
+        select option {
+            color: #333333;
+        }
+
+        .horizontal-row-group {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .field-pair {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .btn-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-top: 28px;
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            padding-top: 10px;
+        }
+
+        button {
+            padding: 11px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-submit {
+            background-color: #ff8c00;
+            color: #ffffff;
+        }
+
+        .btn-submit:hover {
+            background-color: #e07b00;
+        }
+
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                justify-content: center;
+                padding-top: 120px;
+            }
+
+            .brand-logo {
+                left: 50%;
+                transform: translateX(-50%);
+                top: 15px;
+                height: 70px;
+            }
+
+            .wrapper {
+                max-width: 100%;
+            }
+
+            .form-card {
+                max-width: 100%;
+                max-height: 75vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .horizontal-row-group {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .btn-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .form-card {
+                padding: 20px;
+                max-height: 70vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img class="brand-logo" src="../HTML pages/knight-Logo.svg" alt="Knight Fintech Logo">
+    <div class="form-card">
+        <h2>Application Data Clean Up Form</h2>
+        <form id="appForm" onsubmit="handleSubmit(event)" data-automation-status="idle">
+            <div class="form-group">
+                <label for="applicationId">Application ID</label>
+                <input type="text" id="applicationId" name="applicationId" placeholder="Enter Application ID">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 35px;">
+                <label for="appDate" class="required">Data Clean Up Date</label>
+                <input type="date" id="appDate" name="appDate">
+            </div>
+
+            <div class="form-group">
+                <label for="rebuild" class="required">Collection Feed Data</label>
+                <select id="rebuild" name="rebuild" required>
+                    <option value="" disabled selected hidden>Select Option</option>
+                    <option value="true">Check</option>
+                    <option value="false">Uncheck</option>
+                </select>
+            </div>
+
+            <div class="horizontal-row-group">
+                <div class="field-pair">
+                    <label for="loanStatus">Change Loan Status</label>
+                    <select id="loanStatus" name="loanStatus">
+                        <option value="" selected>Select Status</option>
+                        <option value="NPA">NPA</option>
+                        <option value="Active">Active</option>
+                        <option value="Matured">Matured</option>
+                    </select>
+                </div>
+                <div class="field-pair">
+                    <label for="bankStatus">Change Bank Status</label>
+                    <select id="bankStatus" name="bankStatus">
+                        <option value="" selected>Select Status</option>
+                        <option value="NPA">NPA</option>
+                        <option value="Active">Active</option>
+                        <option value="Matured">Matured</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn-submit">Clean Data</button>
+                <button type="reset" class="btn-reset" onclick="handleReset()">Reset</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const selectElements = document.querySelectorAll('select[required]');
+        selectElements.forEach(select => {
+            select.addEventListener('change', () => {
+                select.style.color = select.value !== "" ? "#333333" : "#94a3b8";
+            });
+        });
+
+        const statusSelects = document.querySelectorAll('#loanStatus, #bankStatus');
+        statusSelects.forEach(select => {
+            select.addEventListener('change', () => {
+                select.style.color = select.value !== "" ? "#333333" : "#94a3b8";
+            });
+            select.style.color = "#94a3b8";
+        });
+
+        const dateInputs = document.querySelectorAll('#appDate, #rebuildFromDate, #rebuildToDate');
+        dateInputs.forEach(dateInput => {
+            dateInput.addEventListener('input', () => {
+                dateInput.style.color = dateInput.value ? "#333333" : "#94a3b8";
+            });
+        });
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            const appId = document.getElementById("applicationId").value.trim();
+            const appDate = document.getElementById("appDate").value;
+            const rebuild = document.getElementById("rebuild").value;
+
+            if (!appId || !appDate || !rebuild) {
+                alert("❌ Please complete all required form fields! Selection options cannot be left blank.");
+                return;
+            }
+
+            document.getElementById("appForm").setAttribute("data-automation-status", "triggered");
+        }
+
+        function handleReset() {
+            setTimeout(() => {
+                document.getElementById("appForm").setAttribute("data-automation-status", "idle");
+                selectElements.forEach(select => select.style.color = "#94a3b8");
+                statusSelects.forEach(select => select.style.color = "#94a3b8");
+                dateInputs.forEach(dateInput => dateInput.style.color = "#94a3b8");
+            }, 10);
+        } 
+    </script>
+</body>
+
+</html>
