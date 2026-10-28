@@ -1,0 +1,5 @@
+losURL='https://s1-los-qa.azurewebsites.net/'
+lmsURL='https://s1-lms-qa.azurewebsites.net/'
+usernameL0='UcoL0@ucobank.com'
+passworL0='Uco@1243'
+usernameL1='UcoL1@ucobank.com'

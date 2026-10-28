@@ -1,0 +1,40 @@
+name: Playwright Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci 
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        env:
+          l0UserNameAppliationQueue: ${{ secrets.l0UserNameAppliationQueue }}
+          l0UserNamePoolQueue: ${{ secrets.L0USERNAMEPOOLQUEUE }}
+          l1UserName: ${{ secrets.L1USERNAME }}
+          l2UserName: ${{ secrets.L2USERNAME }}
+          l3UserName: ${{ secrets.L3USERNAME }}
+          superAdminUserName: ${{ secrets.SUPERADMINUSERNAME }}
+          l2Password: ${{ secrets.USER2_PASSWORD }}
+          l0PassWord: ${{ secrets.S0PASSWORD }}
+          l1Password: ${{ secrets.S0PASSWORD }}
+          l3Password: ${{ secrets.S0PASSWORD }}
+          superAdminPassword: ${{ secrets.S0PASSWORD }}
+        run: npx playwright test

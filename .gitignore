@@ -1,0 +1,39 @@
+
+# # Playwright
+# node_modules/
+# /test-results/
+# /playwright-report/
+# /blob-report/
+# /playwright/.cache/
+# /playwright/.auth/
+
+# # Environment Variables and Credentials
+# .env
+
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Playwright Test Outputs
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Environment Variables and Credentials
+.env
+.env.local
+.env.*.local
+
+# Logs and Debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# System Files
+.DS_Store
+Thumbs.db

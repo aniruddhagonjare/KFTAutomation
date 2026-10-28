@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "srihari",
+      "email": "srihari@knightfintech.com",
+      "passwordHash": "$2b$12$lzgYZYCKrenceqOEHpmEzeBm3rHk1DLe8RD3GYlIwjpfLBGktLOgC",
+      "role": "admin",
+      "name": "Srihari Babu"
+    },
+    {
+      "id": 2,
+      "username": "qauser",
+      "email": "qa@knightfintech.com",
+      "passwordHash": "$2b$12$PFPyTloHGFHByEc4hPHTIuWiK7AeGjbbC7YLBT0brOmOm8eGVotQy",
+      "role": "viewer",
+      "name": "QA Engineer"
+    }
+  ]
+}
